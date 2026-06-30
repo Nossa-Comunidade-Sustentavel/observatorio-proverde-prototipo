@@ -47,7 +47,10 @@ export default function Page() {
     <div className="space-y-4">
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div className="space-y-1">
-          <h1 className="text-2xl font-bold tracking-tight text-primary">Mapa público · inteligência territorial</h1>
+          <div className="flex flex-wrap items-center gap-2">
+            <h1 className="text-2xl font-bold tracking-tight text-primary">Mapa público · inteligência territorial</h1>
+            <Badge className="bg-amber-300 text-amber-950 hover:bg-amber-300">Dados simulados</Badge>
+          </div>
           <p className="text-sm text-muted-foreground">
             Mapa de calor de reincidência, agregado por recorte amplo (sem expor pessoas). Dados ilustrativos.
           </p>

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Trees, MapPin, ClipboardList, Search, ListChecks, BarChart3 } from "lucide-react";
+import { Trees, MapPin, ClipboardList, Search, ListChecks, BarChart3, ShieldAlert } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
@@ -19,6 +19,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const path = usePathname();
   return (
     <div className="flex min-h-screen flex-col">
+      <div className="flex items-center justify-center gap-2 bg-amber-300 px-4 py-1.5 text-center text-[12px] font-medium text-amber-950">
+        <ShieldAlert className="size-4 shrink-0" />
+        <span>Protótipo conceitual com dados fictícios · sem vínculo oficial · NÃO é canal de denúncia · não há coleta real de dados.</span>
+      </div>
       <header className="sticky top-0 z-20 border-b border-black/10 bg-primary text-primary-foreground">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2 px-4 py-2.5">
           <div className="flex items-center gap-2.5">
@@ -27,7 +31,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </span>
             <div className="leading-tight">
               <div className="text-sm font-semibold">Observatório Comunitário PROVERDE</div>
-              <div className="text-[11px] opacity-80">Prefeitura de Londrina · SEMA · CONSEMMA · PROVERDE</div>
+              <div className="text-[11px] opacity-80">Protótipo conceitual · proposta da NCS — Nossa Comunidade Sustentável</div>
             </div>
           </div>
           <nav className="flex flex-wrap gap-1">
@@ -62,7 +66,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             PROTÓTIPO CONCEITUAL · dados ilustrativos
           </Badge>
           <span className="opacity-85">
-            Material ilustrativo da proposta da NCS · Projeto executado com recursos do Fundo Municipal do Meio Ambiente
+            Material ilustrativo da proposta da NCS · Sem vínculo ou chancela oficial. Referência institucional do edital: Prefeitura de Londrina · SEMA · CONSEMMA · PROVERDE.
           </span>
         </div>
       </footer>

@@ -21,7 +21,10 @@ export default function Page() {
   return (
     <div className="space-y-5">
       <header className="space-y-1">
-        <h1 className="text-2xl font-bold tracking-tight text-primary">Indicadores &amp; dados abertos</h1>
+        <div className="flex flex-wrap items-center gap-2">
+          <h1 className="text-2xl font-bold tracking-tight text-primary">Indicadores &amp; dados abertos</h1>
+          <Badge className="bg-amber-300 text-amber-950 hover:bg-amber-300">Dados simulados</Badge>
+        </div>
         <p className="text-sm text-muted-foreground">
           Metas SMART (atividade, qualidade e impacto) e legado ao município. Dados ilustrativos.
         </p>
