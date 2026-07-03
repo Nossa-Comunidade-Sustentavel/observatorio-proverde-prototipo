@@ -1,13 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { missoes, type Tema } from "@/lib/data";
-import { Recycle, TreeDeciduous, Sparkles, Coins, CheckCircle2, Clock3, Circle } from "lucide-react";
-
-const iconeTema: Record<Tema, typeof Recycle> = {
-  "Resíduos": Recycle,
-  "Arborização": TreeDeciduous,
-  "Transversal": Sparkles,
-};
+import { missoes } from "@/lib/data";
+import { ICONES } from "@/lib/icons";
+import { Coins, CheckCircle2, Clock3, Circle } from "lucide-react";
 
 const statusInfo = {
   concluida: { label: "Concluída", cls: "bg-primary/10 text-primary", Icon: CheckCircle2 },
@@ -24,14 +19,14 @@ export default function Page() {
           <Badge className="bg-amber-300 text-amber-950 hover:bg-amber-300">Dados simulados</Badge>
         </div>
         <p className="max-w-3xl text-sm text-muted-foreground">
-          Desafios educativos práticos para aprender fazendo — sem reportar ou denunciar. Cada missão concluída rende
-          pontos e aproxima você da próxima medalha.
+          Desafios educativos práticos, um por tema do jogo — para aprender fazendo, sem reportar ou denunciar. Cada
+          missão concluída rende pontos e aproxima você da próxima medalha.
         </p>
       </header>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {missoes.map((m) => {
-          const Icone = iconeTema[m.tema];
+          const Icone = ICONES[m.icone];
           const st = statusInfo[m.status];
           return (
             <Card key={m.id} className="flex flex-col">

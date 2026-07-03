@@ -7,17 +7,12 @@ import { Progress } from "@/components/ui/progress";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
 import { Quiz } from "@/components/quiz";
-import { modulos, type Modulo, type Tema } from "@/lib/data";
-import { Recycle, TreeDeciduous, Sparkles, Medal, PlayCircle } from "lucide-react";
+import { modulos, type Modulo } from "@/lib/data";
+import { ICONES } from "@/lib/icons";
+import { Medal, PlayCircle, Star } from "lucide-react";
 
-const iconeTema: Record<Tema, typeof Recycle> = {
-  "Resíduos": Recycle,
-  "Arborização": TreeDeciduous,
-  "Transversal": Sparkles,
-};
-
-function ModuloCard({ m }: { m: Modulo }) {
-  const Icone = iconeTema[m.tema];
+function FaseCard({ m }: { m: Modulo }) {
+  const Icone = ICONES[m.icone];
   const pct = Math.round((m.concluidas / m.licoes) * 100);
   return (
     <Card className="flex flex-col">
@@ -26,9 +21,16 @@ function ModuloCard({ m }: { m: Modulo }) {
           <span className="grid size-9 place-items-center rounded-lg bg-primary/10 text-primary">
             <Icone className="size-5" />
           </span>
-          <Badge variant="secondary" className="gap-1 text-[10px]">
-            <Medal className="size-3" /> {m.medalha}
-          </Badge>
+          <div className="flex items-center gap-1">
+            {m.ancora && (
+              <Badge className="gap-1 bg-primary/10 text-primary text-[10px] hover:bg-primary/10">
+                <Star className="size-3" /> prioritário
+              </Badge>
+            )}
+            <Badge variant="secondary" className="gap-1 text-[10px]">
+              <Medal className="size-3" /> {m.medalha}
+            </Badge>
+          </div>
         </div>
         <CardTitle className="text-base">{m.titulo}</CardTitle>
         <CardDescription>{m.descricao}</CardDescription>
@@ -72,7 +74,7 @@ function ModuloCard({ m }: { m: Modulo }) {
         <Dialog>
           <DialogTrigger asChild>
             <Button className="w-full gap-2">
-              <PlayCircle className="size-4" /> Fazer o quiz da trilha
+              <PlayCircle className="size-4" /> Jogar o quiz da fase
             </Button>
           </DialogTrigger>
           <DialogContent>
@@ -93,17 +95,18 @@ export default function Page() {
     <div className="space-y-5">
       <header className="space-y-1">
         <div className="flex flex-wrap items-center gap-2">
-          <h1 className="text-2xl font-bold tracking-tight text-primary">Trilhas · Cartilha gamificada</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-primary">Jogo de Educação Ambiental · Fases</h1>
           <Badge className="bg-amber-300 text-amber-950 hover:bg-amber-300">Dados simulados</Badge>
         </div>
         <p className="max-w-3xl text-sm text-muted-foreground">
-          A cartilha vira <strong>trilhas de aprendizagem</strong>: leia os conceitos, veja boas práticas e faça o quiz
-          para ganhar XP e medalhas. Foco nas duas dores prioritárias — resíduos e arborização — mais temas transversais.
+          O jogo tem <strong>7 fases temáticas</strong> sobre os problemas ambientais urbanos e suas soluções. Em cada
+          fase: leia os conceitos, veja boas práticas e jogue o quiz para ganhar XP e medalhas.{" "}
+          <strong>Resíduos e arborização</strong> são as fases prioritárias, ligadas às oficinas e aos polos.
         </p>
       </header>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        {modulos.map((m) => <ModuloCard key={m.id} m={m} />)}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {modulos.map((m) => <FaseCard key={m.id} m={m} />)}
       </div>
     </div>
   );

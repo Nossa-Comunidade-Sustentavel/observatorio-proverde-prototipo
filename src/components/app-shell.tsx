@@ -2,13 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Trees, BookOpen, Target, GraduationCap, Trophy, BarChart3, ShieldAlert } from "lucide-react";
+import { Trees, Gamepad2, Target, GraduationCap, Trophy, BarChart3, ShieldAlert } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 const tabs = [
   { href: "/", label: "Início", icon: Trees, exact: true },
-  { href: "/trilhas", label: "Trilhas", icon: BookOpen },
+  { href: "/trilhas", label: "Jogo", icon: Gamepad2 },
   { href: "/missoes", label: "Missões", icon: Target },
   { href: "/oficinas", label: "Oficinas", icon: GraduationCap },
   { href: "/conquistas", label: "Conquistas", icon: Trophy },
@@ -31,7 +31,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </span>
             <div className="leading-tight">
               <div className="text-sm font-semibold">Observatório Comunitário PROVERDE</div>
-              <div className="text-[11px] opacity-80">Educação ambiental gamificada · protótipo conceitual da NCS</div>
+              <div className="text-[11px] opacity-80">Jogo de Educação Ambiental · protótipo conceitual da NCS</div>
             </div>
           </div>
           <nav className="flex flex-wrap gap-1">

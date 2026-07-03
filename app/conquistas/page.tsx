@@ -39,7 +39,7 @@ export default function Page() {
           </div>
           <div className="flex gap-4 sm:flex-col sm:justify-center">
             <div className="text-center"><div className="inline-flex items-center gap-1 text-xl font-extrabold text-primary"><Target className="size-4" />{perfil.missoesConcluidas}</div><div className="text-[11px] text-muted-foreground">missões</div></div>
-            <div className="text-center"><div className="inline-flex items-center gap-1 text-xl font-extrabold text-primary"><BookOpen className="size-4" />{perfil.trilhasConcluidas}</div><div className="text-[11px] text-muted-foreground">trilhas</div></div>
+            <div className="text-center"><div className="inline-flex items-center gap-1 text-xl font-extrabold text-primary"><BookOpen className="size-4" />{perfil.fasesConcluidas}</div><div className="text-[11px] text-muted-foreground">fases</div></div>
           </div>
         </CardContent>
       </Card>

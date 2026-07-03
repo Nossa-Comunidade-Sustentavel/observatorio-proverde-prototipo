@@ -7,7 +7,7 @@ import { indicadoresEdu as I, serieEngajamento } from "@/lib/data";
 const kpis = [
   { num: I.participantes, lab: "Participantes formados" },
   { num: I.oficinas, lab: "Oficinas realizadas" },
-  { num: I.trilhasConcluidas, lab: "Trilhas concluídas" },
+  { num: I.fasesConcluidas, lab: "Fases concluídas" },
   { num: I.medalhas, lab: "Medalhas concedidas" },
   { num: I.alcanceEscolar, lab: "Turmas / escolas alcançadas" },
   { num: Math.round(I.taxaConclusao * 100) + "%", lab: "Taxa de conclusão das trilhas" },

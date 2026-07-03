@@ -1,13 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { oficinas, type Tema } from "@/lib/data";
-import { Recycle, TreeDeciduous, Sparkles, Clock, Users, Award, Medal } from "lucide-react";
-
-const iconeTema: Record<Tema, typeof Recycle> = {
-  "Resíduos": Recycle,
-  "Arborização": TreeDeciduous,
-  "Transversal": Sparkles,
-};
+import { oficinas } from "@/lib/data";
+import { ICONES } from "@/lib/icons";
+import { Clock, Users, Award, Medal } from "lucide-react";
 
 export default function Page() {
   return (
@@ -19,7 +14,7 @@ export default function Page() {
         </div>
         <p className="max-w-3xl text-sm text-muted-foreground">
           Encontros presenciais, gratuitos e abertos à comunidade e às escolas nos polos parceiros. A oficina é o coração
-          do projeto — a cartilha e o app apoiam e dão continuidade ao que se aprende no encontro.
+          do projeto — o jogo e a cartilha apoiam e dão continuidade ao que se aprende no encontro.
         </p>
       </header>
 
@@ -31,18 +26,18 @@ export default function Page() {
           </div>
           <div className="flex items-start gap-2">
             <Medal className="mt-0.5 size-5 shrink-0 text-primary" />
-            <div className="text-sm"><strong>Participou, ganhou</strong><br /><span className="text-muted-foreground">presença na oficina rende medalha no app</span></div>
+            <div className="text-sm"><strong>Participou, ganhou</strong><br /><span className="text-muted-foreground">presença na oficina rende medalha no jogo</span></div>
           </div>
           <div className="flex items-start gap-2">
             <Award className="mt-0.5 size-5 shrink-0 text-primary" />
-            <div className="text-sm"><strong>Formação certificada</strong><br /><span className="text-muted-foreground">certificado de conclusão da trilha formativa</span></div>
+            <div className="text-sm"><strong>Formação certificada</strong><br /><span className="text-muted-foreground">certificado de conclusão da formação</span></div>
           </div>
         </CardContent>
       </Card>
 
       <div className="grid gap-4 md:grid-cols-2">
         {oficinas.map((o) => {
-          const Icone = iconeTema[o.tema];
+          const Icone = ICONES[o.icone];
           return (
             <Card key={o.titulo}>
               <CardHeader>
