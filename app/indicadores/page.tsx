@@ -2,20 +2,18 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Download, BookOpen } from "lucide-react";
-import { indicadores as I, serieCiclos } from "@/lib/data";
+import { indicadoresEdu as I, serieEngajamento } from "@/lib/data";
 
 const kpis = [
-  { num: I.registros, lab: "Registros validados" },
-  { num: Math.round(I.georreferenciados * 100) + "%", lab: "Georreferenciados" },
-  { num: Math.round(I.closedLoop * 100) + "%", lab: "Com closed-loop" },
-  { num: I.tempoEncaminhamento + " dias", lab: "Tempo médio até encaminhamento" },
-  { num: I.hotspotsPriorizados, lab: "Pontos críticos priorizados" },
-  { num: I.hotspotsReincidentes, lab: "Hotspots reincidentes encaminhados" },
-  { num: I.arvoresMapeadas, lab: "Indivíduos arbóreos mapeados" },
-  { num: Math.round(I.sobrevivenciaPlantio * 100) + "%", lab: "Sobrevivência de plantio observada" },
+  { num: I.participantes, lab: "Participantes formados" },
+  { num: I.oficinas, lab: "Oficinas realizadas" },
+  { num: I.trilhasConcluidas, lab: "Trilhas concluídas" },
+  { num: I.medalhas, lab: "Medalhas concedidas" },
+  { num: I.alcanceEscolar, lab: "Turmas / escolas alcançadas" },
+  { num: Math.round(I.taxaConclusao * 100) + "%", lab: "Taxa de conclusão das trilhas" },
 ];
 
-const max = Math.max(...serieCiclos.map((c) => c.valor));
+const max = Math.max(...serieEngajamento.map((c) => c.valor));
 
 export default function Page() {
   return (
@@ -26,11 +24,11 @@ export default function Page() {
           <Badge className="bg-amber-300 text-amber-950 hover:bg-amber-300">Dados simulados</Badge>
         </div>
         <p className="text-sm text-muted-foreground">
-          Metas SMART (atividade, qualidade e impacto) e legado ao município. Dados ilustrativos.
+          Métricas de <strong>educação e engajamento</strong> — aferidas e reportadas — e o legado aberto ao município.
         </p>
       </header>
 
-      <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {kpis.map((k) => (
           <Card key={k.lab}>
             <CardContent className="pt-6 text-center">
@@ -44,12 +42,12 @@ export default function Page() {
       <div className="grid gap-4 lg:grid-cols-3">
         <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle className="text-base">Registros validados por ciclo bimestral</CardTitle>
-            <CardDescription>Série histórica — base de linha do Ciclo 1.</CardDescription>
+            <CardTitle className="text-base">Participação por ciclo bimestral</CardTitle>
+            <CardDescription>Engajamento nas trilhas, missões e oficinas (referência ilustrativa).</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex h-44 items-end gap-3">
-              {serieCiclos.map((c) => (
+              {serieEngajamento.map((c) => (
                 <div key={c.ciclo} className="flex h-full flex-1 flex-col items-center justify-end gap-1">
                   <div className="text-xs font-medium text-muted-foreground">{c.valor}</div>
                   <div
@@ -65,20 +63,20 @@ export default function Page() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Legado · dados abertos</CardTitle>
-            <CardDescription>Tudo exportável, sob guarda da NCS/Município.</CardDescription>
+            <CardTitle className="text-base">Legado · aberto ao município</CardTitle>
+            <CardDescription>Cartilha e app abertos, sob guarda da NCS/Município.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
             <Button variant="outline" className="w-full justify-start gap-2">
-              <Download className="size-4" /> Baixar dados abertos (CSV)
+              <BookOpen className="size-4" /> Baixar a cartilha (PDF · CC-BY)
             </Button>
             <Button variant="outline" className="w-full justify-start gap-2">
-              <Download className="size-4" /> Baixar dados abertos (GeoJSON)
+              <Download className="size-4" /> Materiais e conteúdos abertos
             </Button>
             <Button variant="outline" className="w-full justify-start gap-2">
-              <BookOpen className="size-4" /> Dicionário de dados
+              <Download className="size-4" /> Indicadores de engajamento (CSV)
             </Button>
-            <Badge variant="secondary" className="mt-1">Licença aberta · interoperável com 156/SIG</Badge>
+            <Badge variant="secondary" className="mt-1">Licença aberta · código do app na org da NCS</Badge>
           </CardContent>
         </Card>
       </div>

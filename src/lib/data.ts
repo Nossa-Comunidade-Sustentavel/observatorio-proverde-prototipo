@@ -1,107 +1,250 @@
 // DADOS 100% FICTÍCIOS — apenas ilustrativos do protótipo conceitual.
-// Nenhuma informação real, nenhum dado pessoal.
+// Ferramenta EDUCATIVA gamificada. Nenhuma informação real, nenhum dado pessoal, não coleta denúncias.
 
-export const CENTRO: [number, number] = [-23.31, -51.162]; // Londrina/PR (aprox.)
+export type Tema = "Resíduos" | "Arborização" | "Transversal";
 
-export type Sev = "baixa" | "media" | "alta";
-export type HeatPoint = [number, number, number];
+/* ============================ TRILHAS / CARTILHA GAMIFICADA ============================ */
 
-// RNG determinístico (mulberry32) — mapa estável entre recarregamentos (sem hydration mismatch)
-function rng(seed: number) {
-  return function () {
-    seed |= 0;
-    seed = (seed + 0x6d2b79f5) | 0;
-    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-const rand = rng(42);
-
-function scatter(center: [number, number], n: number, spread: number, base: number): HeatPoint[] {
-  const pts: HeatPoint[] = [];
-  for (let i = 0; i < n; i++) {
-    const lat = center[0] + (rand() - 0.5) * spread;
-    const lng = center[1] + (rand() - 0.5) * spread * 1.3;
-    pts.push([lat, lng, base * (0.4 + rand() * 0.6)]);
-  }
-  return pts;
-}
-
-export type Hotspot = { id: string; nome: string; centro: [number, number]; recorrencia: number; severidade: Sev };
-
-export const hotspotsResiduos: Hotspot[] = [
-  { id: "H1", nome: "Vila Nova — viela do fundo de vale", centro: [-23.296, -51.146], recorrencia: 14, severidade: "alta" },
-  { id: "H2", nome: "Conj. Ernani — terreno baldio", centro: [-23.272, -51.189], recorrencia: 9, severidade: "alta" },
-  { id: "H3", nome: "Margem do córrego (zona oeste)", centro: [-23.322, -51.201], recorrencia: 6, severidade: "media" },
-  { id: "H4", nome: "Boca-de-lobo — av. central", centro: [-23.309, -51.158], recorrencia: 4, severidade: "media" },
-  { id: "H5", nome: "Próx. à feira (zona sul)", centro: [-23.345, -51.151], recorrencia: 3, severidade: "baixa" },
-];
-
-export const hotspotsArborizacao: Hotspot[] = [
-  { id: "A1", nome: "Quadras sem cobertura (zona sul)", centro: [-23.34, -51.17], recorrencia: 22, severidade: "alta" },
-  { id: "A2", nome: "Falhas de plantio — Jd. das Palmeiras", centro: [-23.285, -51.14], recorrencia: 12, severidade: "media" },
-  { id: "A3", nome: "Árvores em risco junto à fiação", centro: [-23.315, -51.18], recorrencia: 7, severidade: "alta" },
-];
-
-const peso: Record<Sev, number> = { alta: 9, media: 5, baixa: 2 };
-
-export const heatResiduos: HeatPoint[] = hotspotsResiduos.flatMap((h) => scatter(h.centro, 18, 0.012, peso[h.severidade]));
-export const heatArborizacao: HeatPoint[] = hotspotsArborizacao.flatMap((h) => scatter(h.centro, 22, 0.018, peso[h.severidade]));
-
-export const pontosPriorizados = [...hotspotsResiduos, ...hotspotsArborizacao]
-  .map((h) => ({ ...h, score: peso[h.severidade] * h.recorrencia, tema: h.id[0] === "H" ? "Resíduos" : "Arborização" }))
-  .sort((a, b) => b.score - a.score);
-
-export type Estado =
-  | "recebido" | "em_triagem" | "valido" | "incompleto" | "duplicado"
-  | "fora_de_escopo" | "sensivel" | "rejeitado" | "encaminhavel" | "encaminhado";
-
-export type Registro = {
-  protocolo: string; tema: "Resíduos" | "Arborização"; subtipo: string;
-  severidade: Sev; bairro: string; data: string; estado: Estado; recorrencia: number; hotspot: string | null;
+export type QuizQ = {
+  pergunta: string;
+  opcoes: string[];
+  correta: number; // índice da opção correta
+  explica: string;
 };
 
-export const registros: Registro[] = [
-  { protocolo: "PVD-2026-RES-000123", tema: "Resíduos", subtipo: "Entulho/RCC", severidade: "alta", bairro: "Vila Nova", data: "12/10/2026", estado: "encaminhado", recorrencia: 14, hotspot: "H1" },
-  { protocolo: "PVD-2026-RES-000131", tema: "Resíduos", subtipo: "Volumoso", severidade: "media", bairro: "Centro", data: "13/10/2026", estado: "encaminhavel", recorrencia: 1, hotspot: null },
-  { protocolo: "PVD-2026-ARB-000142", tema: "Arborização", subtipo: "Árvore de risco", severidade: "alta", bairro: "Zona oeste", data: "13/10/2026", estado: "valido", recorrencia: 3, hotspot: "A3" },
-  { protocolo: "PVD-2026-RES-000150", tema: "Resíduos", subtipo: "Poda/galhada", severidade: "baixa", bairro: "Conj. Ernani", data: "14/10/2026", estado: "duplicado", recorrencia: 9, hotspot: "H2" },
-  { protocolo: "PVD-2026-ARB-000155", tema: "Arborização", subtipo: "Falha de plantio", severidade: "media", bairro: "Jd. das Palmeiras", data: "14/10/2026", estado: "valido", recorrencia: 12, hotspot: "A2" },
-  { protocolo: "PVD-2026-RES-000160", tema: "Resíduos", subtipo: "Indefinido", severidade: "media", bairro: "—", data: "15/10/2026", estado: "incompleto", recorrencia: 1, hotspot: null },
-  { protocolo: "PVD-2026-RES-000164", tema: "Resíduos", subtipo: "Doméstico (placa visível)", severidade: "media", bairro: "Centro", data: "15/10/2026", estado: "sensivel", recorrencia: 1, hotspot: null },
-  { protocolo: "PVD-2026-ARB-000170", tema: "Arborização", subtipo: "Solicitação de plantio", severidade: "baixa", bairro: "Zona sul", data: "16/10/2026", estado: "valido", recorrencia: 22, hotspot: "A1" },
+export type Modulo = {
+  id: string;
+  tema: Tema;
+  titulo: string;
+  descricao: string;
+  licoes: number;
+  concluidas: number;
+  xp: number; // XP ao concluir
+  medalha: string;
+  conceitos: string[];
+  boasPraticas: string[];
+  dicas: string[];
+  quiz: QuizQ[];
+};
+
+export const modulos: Modulo[] = [
+  {
+    id: "residuos",
+    tema: "Resíduos",
+    titulo: "Resíduos & coleta seletiva",
+    descricao: "Aprenda a separar corretamente e a evitar o descarte irregular no seu bairro.",
+    licoes: 6,
+    concluidas: 4,
+    xp: 120,
+    medalha: "Guardião da Coleta",
+    conceitos: [
+      "Os 5 R: repensar, recusar, reduzir, reutilizar, reciclar.",
+      "Cores da coleta seletiva (azul=papel, verde=vidro, vermelho=plástico, amarelo=metal, marrom=orgânico).",
+      "O que NÃO vai na coleta comum: entulho, volumosos, eletrônicos, pilhas, óleo.",
+    ],
+    boasPraticas: [
+      "Leve entulho e volumosos aos ecopontos, nunca a terrenos baldios.",
+      "Reduza o lixo doméstico começando pela compostagem de orgânicos.",
+      "Descarte pilhas, lâmpadas e eletrônicos em pontos de logística reversa.",
+    ],
+    dicas: [
+      "Um ponto de descarte irregular limpo e sinalizado tende a não voltar.",
+      "Óleo de cozinha usado vira sabão — guarde em garrafa PET.",
+    ],
+    quiz: [
+      {
+        pergunta: "Onde descartar corretamente entulho de uma pequena reforma?",
+        opcoes: ["Em terreno baldio próximo", "Em um ecoponto ou caçamba licenciada", "Na coleta comum, ensacado"],
+        correta: 1,
+        explica: "Entulho (RCC) é resíduo da construção civil e deve ir a ecopontos ou caçambas licenciadas — nunca a terrenos baldios.",
+      },
+      {
+        pergunta: "Qual a cor da lixeira para plástico na coleta seletiva?",
+        opcoes: ["Verde", "Vermelho", "Azul"],
+        correta: 1,
+        explica: "Vermelho = plástico. Azul = papel, verde = vidro, amarelo = metal, marrom = orgânico.",
+      },
+    ],
+  },
+  {
+    id: "arborizacao",
+    tema: "Arborização",
+    titulo: "Arborização urbana",
+    descricao: "Entenda o papel das árvores na cidade e como cuidar da arborização do seu território (Lei 11.996/2013).",
+    licoes: 5,
+    concluidas: 2,
+    xp: 100,
+    medalha: "Amigo das Árvores",
+    conceitos: [
+      "Benefícios: sombra, redução de temperatura, drenagem, fauna e bem-estar.",
+      "A árvore certa no lugar certo: porte x fiação, calçada e recuo.",
+      "Cuidados legais: poda e supressão exigem autorização do órgão competente.",
+    ],
+    boasPraticas: [
+      "Regue mudas novas nos primeiros meses — a sobrevivência depende disso.",
+      "Nunca pregue, ancore ou pinte troncos.",
+      "Comunique falhas de plantio e árvores em risco pelos canais oficiais.",
+    ],
+    dicas: [
+      "Cada muda que sobrevive é sombra por décadas.",
+      "Prefira espécies nativas adaptadas ao clima de Londrina.",
+    ],
+    quiz: [
+      {
+        pergunta: "Quem pode autorizar a poda ou supressão de uma árvore em via pública?",
+        opcoes: ["Qualquer morador", "O órgão ambiental competente", "A empresa de energia, sempre"],
+        correta: 1,
+        explica: "Poda e supressão dependem de autorização do órgão ambiental competente — o cidadão apenas comunica e cuida.",
+      },
+      {
+        pergunta: "O que mais influencia a sobrevivência de uma muda recém-plantada?",
+        opcoes: ["A cor das folhas", "A rega nos primeiros meses", "O tamanho do vaso original"],
+        correta: 1,
+        explica: "A rega e os cuidados iniciais são decisivos para a muda pegar.",
+      },
+    ],
+  },
+  {
+    id: "compostagem",
+    tema: "Transversal",
+    titulo: "Compostagem & consumo consciente",
+    descricao: "Transforme resíduos orgânicos em adubo e repense o consumo do dia a dia.",
+    licoes: 4,
+    concluidas: 1,
+    xp: 80,
+    medalha: "Mestre da Composteira",
+    conceitos: [
+      "Metade do lixo doméstico é orgânico e pode virar adubo.",
+      "Composteira doméstica: camadas de úmido (restos) e seco (folhas/papelão).",
+      "Consumo consciente: menos descartáveis, mais durabilidade.",
+    ],
+    boasPraticas: [
+      "Evite carnes e laticínios na composteira doméstica.",
+      "Use sacola retornável e recuse descartáveis desnecessários.",
+    ],
+    dicas: ["Composto pronto vira adubo para hortas e para o plantio de árvores."],
+    quiz: [
+      {
+        pergunta: "Qual resíduo NÃO deve ir na composteira doméstica comum?",
+        opcoes: ["Casca de frutas", "Restos de carne", "Borra de café"],
+        correta: 1,
+        explica: "Carnes e laticínios atraem vetores e dificultam o processo na composteira doméstica.",
+      },
+    ],
+  },
+  {
+    id: "cidadania",
+    tema: "Transversal",
+    titulo: "Cidadania & território",
+    descricao: "Conheça seu bairro, os canais oficiais e como agir de forma segura e colaborativa.",
+    licoes: 4,
+    concluidas: 0,
+    xp: 80,
+    medalha: "Cidadão Ativo",
+    conceitos: [
+      "Canais oficiais do Município (ex.: Londrina ON / 156) para solicitações e serviços.",
+      "Educação ambiental como prevenção: mudar hábito custa menos que remediar.",
+      "Observação segura: aprender e cuidar, sem intervir em áreas de risco.",
+    ],
+    boasPraticas: [
+      "Use os canais oficiais para pedir coleta, poda ou reparo.",
+      "Multiplique o que aprendeu: leve a cartilha para casa e para a escola.",
+    ],
+    dicas: ["Comunidade informada é comunidade que previne."],
+    quiz: [
+      {
+        pergunta: "Este app é um canal de denúncia?",
+        opcoes: ["Sim, substitui os canais oficiais", "Não — é uma ferramenta educativa; os pedidos vão aos canais oficiais"],
+        correta: 1,
+        explica: "O projeto é EDUCATIVO e complementar. Solicitações e denúncias seguem pelos canais oficiais do Município (ex.: Londrina ON / 156).",
+      },
+    ],
+  },
 ];
 
-export const ESTADOS: Record<Estado, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
-  recebido: { label: "Recebido", variant: "secondary" },
-  em_triagem: { label: "Em triagem", variant: "secondary" },
-  valido: { label: "Válido", variant: "default" },
-  incompleto: { label: "Incompleto", variant: "outline" },
-  duplicado: { label: "Duplicado", variant: "outline" },
-  fora_de_escopo: { label: "Fora de escopo", variant: "secondary" },
-  sensivel: { label: "Sensível (bloqueado)", variant: "destructive" },
-  rejeitado: { label: "Rejeitado", variant: "destructive" },
-  encaminhavel: { label: "Encaminhável", variant: "default" },
-  encaminhado: { label: "Encaminhado", variant: "default" },
+/* ============================ MISSÕES EDUCATIVAS ============================ */
+
+export type Missao = {
+  id: string;
+  titulo: string;
+  descricao: string;
+  pontos: number;
+  tema: Tema;
+  status: "disponivel" | "em_andamento" | "concluida";
 };
 
-export const indicadores = {
-  registros: 468,
-  georreferenciados: 0.93,
-  closedLoop: 0.84,
-  tempoEncaminhamento: 8,
-  hotspotsPriorizados: 60,
-  hotspotsReincidentes: 31,
-  arvoresMapeadas: 372,
-  sobrevivenciaPlantio: 0.71,
+export const missoes: Missao[] = [
+  { id: "m1", titulo: "Detetive da coleta seletiva", descricao: "Aprenda a separar 5 tipos de resíduo e acerte o quiz relâmpago.", pontos: 50, tema: "Resíduos", status: "concluida" },
+  { id: "m2", titulo: "Caça ao ecoponto", descricao: "Descubra onde ficam os ecopontos e o que cada um recebe.", pontos: 40, tema: "Resíduos", status: "em_andamento" },
+  { id: "m3", titulo: "Adote uma muda", descricao: "Aprenda os cuidados de plantio e acompanhe uma muda por 30 dias.", pontos: 80, tema: "Arborização", status: "em_andamento" },
+  { id: "m4", titulo: "Mapa afetivo do bairro", descricao: "Identifique árvores e áreas verdes que você gosta no seu território.", pontos: 60, tema: "Arborização", status: "disponivel" },
+  { id: "m5", titulo: "Composteira em casa", descricao: "Monte uma composteira simples e registre a primeira camada.", pontos: 70, tema: "Transversal", status: "disponivel" },
+  { id: "m6", titulo: "Presença na oficina", descricao: "Participe de uma oficina no seu polo e ganhe a medalha do encontro.", pontos: 90, tema: "Transversal", status: "disponivel" },
+];
+
+/* ============================ PERFIL / CONQUISTAS ============================ */
+
+export type Medalha = { id: string; nome: string; descricao: string; conquistada: boolean };
+
+export const medalhas: Medalha[] = [
+  { id: "d1", nome: "Guardião da Coleta", descricao: "Concluiu a trilha de resíduos & coleta seletiva.", conquistada: true },
+  { id: "d2", nome: "Amigo das Árvores", descricao: "Concluiu a trilha de arborização urbana.", conquistada: false },
+  { id: "d3", nome: "Mestre da Composteira", descricao: "Montou uma composteira e concluiu a trilha.", conquistada: false },
+  { id: "d4", nome: "Cidadão Ativo", descricao: "Concluiu a trilha de cidadania & território.", conquistada: false },
+  { id: "d5", nome: "Presença de Ouro", descricao: "Participou de 3 oficinas no polo.", conquistada: true },
+  { id: "d6", nome: "Multiplicador", descricao: "Levou a cartilha para a escola ou para casa.", conquistada: false },
+];
+
+export const perfil = {
+  nome: "Monitor(a) exemplo",
+  polo: "Vila Nova",
+  titulo: "Guardião Verde nível 4",
+  nivel: 4,
+  xp: 640,
+  xpProximo: 800,
+  missoesConcluidas: 1,
+  trilhasConcluidas: 1,
 };
 
-export const serieCiclos = [
-  { ciclo: "C1", valor: 38 },
-  { ciclo: "C2", valor: 61 },
-  { ciclo: "C3", valor: 84 },
-  { ciclo: "C4", valor: 72 },
-  { ciclo: "C5", valor: 96 },
-  { ciclo: "C6", valor: 117 },
+export type Jogador = { pos: number; nome: string; nivel: number; xp: number; polo: string; voce?: boolean };
+
+export const ranking: Jogador[] = [
+  { pos: 1, nome: "Turma 7ºB — E.M. do Ernani", nivel: 6, xp: 1180, polo: "Igreja Batista" },
+  { pos: 2, nome: "Grupo Sementes", nivel: 5, xp: 940, polo: "CJV" },
+  { pos: 3, nome: "Monitor(a) exemplo", nivel: 4, xp: 640, polo: "Vila Nova", voce: true },
+  { pos: 4, nome: "Coletivo Verde Vila Nova", nivel: 4, xp: 610, polo: "Vila Nova" },
+  { pos: 5, nome: "Família Andrade", nivel: 3, xp: 480, polo: "CJV" },
+  { pos: 6, nome: "Turma 5ºA", nivel: 3, xp: 420, polo: "Igreja Batista" },
+];
+
+/* ============================ INDICADORES EDUCATIVOS ============================ */
+
+export const indicadoresEdu = {
+  participantes: 82, // formados/ativos (referência ilustrativa)
+  oficinas: 11,
+  trilhasConcluidas: 214,
+  medalhas: 386,
+  alcanceEscolar: 5, // turmas/escolas
+  taxaConclusao: 0.78,
+};
+
+export const serieEngajamento = [
+  { ciclo: "C1", valor: 24 },
+  { ciclo: "C2", valor: 41 },
+  { ciclo: "C3", valor: 58 },
+  { ciclo: "C4", valor: 73 },
+  { ciclo: "C5", valor: 69 },
+  { ciclo: "C6", valor: 88 },
+];
+
+/* ============================ OFICINAS (PROGRAMA) ============================ */
+
+export type Oficina = { titulo: string; tema: Tema; formato: string; carga: string; publico: string };
+
+export const oficinas: Oficina[] = [
+  { titulo: "Separar para transformar", tema: "Resíduos", formato: "Oficina prática", carga: "2h", publico: "Comunidade e escolas" },
+  { titulo: "Composteira do zero", tema: "Transversal", formato: "Oficina mão na massa", carga: "2h30", publico: "Famílias" },
+  { titulo: "Plantar e cuidar", tema: "Arborização", formato: "Oficina + campo", carga: "3h", publico: "Comunidade e escolas" },
+  { titulo: "Meu bairro, minha responsa", tema: "Transversal", formato: "Roda de conversa", carga: "1h30", publico: "Comunidade" },
+  { titulo: "Devolutiva do ciclo", tema: "Transversal", formato: "Encontro de resultados", carga: "1h", publico: "Todos os polos" },
 ];

@@ -2,16 +2,16 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Trees, MapPin, ClipboardList, Search, ListChecks, BarChart3, ShieldAlert } from "lucide-react";
+import { Trees, BookOpen, Target, GraduationCap, Trophy, BarChart3, ShieldAlert } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 const tabs = [
   { href: "/", label: "Início", icon: Trees, exact: true },
-  { href: "/registrar", label: "Registrar", icon: ClipboardList },
-  { href: "/acompanhar", label: "Acompanhar", icon: Search },
-  { href: "/mapa", label: "Mapa público", icon: MapPin },
-  { href: "/curadoria", label: "Curadoria", icon: ListChecks },
+  { href: "/trilhas", label: "Trilhas", icon: BookOpen },
+  { href: "/missoes", label: "Missões", icon: Target },
+  { href: "/oficinas", label: "Oficinas", icon: GraduationCap },
+  { href: "/conquistas", label: "Conquistas", icon: Trophy },
   { href: "/indicadores", label: "Indicadores", icon: BarChart3 },
 ];
 
@@ -21,7 +21,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <div className="flex min-h-screen flex-col">
       <div className="flex items-center justify-center gap-2 bg-amber-300 px-4 py-1.5 text-center text-[12px] font-medium text-amber-950">
         <ShieldAlert className="size-4 shrink-0" />
-        <span>Protótipo conceitual com dados fictícios · sem vínculo oficial · NÃO é canal de denúncia · não há coleta real de dados.</span>
+        <span>Protótipo conceitual com dados fictícios · sem vínculo oficial · ferramenta educativa, NÃO coleta denúncias.</span>
       </div>
       <header className="sticky top-0 z-20 border-b border-black/10 bg-primary text-primary-foreground">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2 px-4 py-2.5">
@@ -31,7 +31,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </span>
             <div className="leading-tight">
               <div className="text-sm font-semibold">Observatório Comunitário PROVERDE</div>
-              <div className="text-[11px] opacity-80">Protótipo conceitual · proposta da NCS — Nossa Comunidade Sustentável</div>
+              <div className="text-[11px] opacity-80">Educação ambiental gamificada · protótipo conceitual da NCS</div>
             </div>
           </div>
           <nav className="flex flex-wrap gap-1">
